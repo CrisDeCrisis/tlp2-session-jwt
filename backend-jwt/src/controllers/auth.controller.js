@@ -1,42 +1,16 @@
-// server.js
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import cors from 'cors';
+import { connectDB } from '../database/database.js';
+import { generarJWT } from '../helpers/generar-jwt.js';
 
-import { PORT } from './config/env.js';
-import generarJwt from './helpers/generar-jwt.js';
-import validarJwt from './middlewares/validar-jwt.js';
-import { database } from './db/database.js';
-import morgan from 'morgan';
-
-
-const app = express();
-
-app.use(cors({
-    origin: ['http://localhost:5500', 'http://localhost:3000', 'http://127.0.0.1:3000'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-}));
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(cookieParser());
-app.use(session({
-    secret: 'session_secret_key', // Cambia esto por una clave secreta en producción
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } // Usar 'true' si usas HTTPS
-}));
+export const authCtrl = {};
 
 // Endpoint de inicio de sesión (login)
-app.post('/login', async (req, res) => {
+authCtrl.login = async (req, res) => {
     const { username, password } = req.body;
 
-
     try {
-        const user = database.user.find(
-            user => user.username === username && user.password === password
-        );
+        const connection = await connectDB();
+        const [rows] = await connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
+        const user = rows[0];
 
         // Validación de usuario
         if (!user) {
@@ -44,7 +18,7 @@ app.post('/login', async (req, res) => {
         }
 
         // Generar token JWT
-        const token = await generarJwt(user.id);
+        const token = await generarJWT(user.id);
 
         // Almacenar el token en la sesión del servidor
         req.session.token = token;
@@ -61,7 +35,7 @@ app.post('/login', async (req, res) => {
         console.error(error);
         return res.status(500).json({ message: 'Error Inesperado' });
     }
-});
+};
 
 // Endpoint para validar la sesión
 app.get('/session', validarJwt, (req, res) => {
@@ -84,9 +58,4 @@ app.post('/logout', (req, res) => {
         console.error(error);
         return res.status(500).json({ message: 'Error Inesperado' });
     }
-});
-
-// Servidor escuchando
-app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
