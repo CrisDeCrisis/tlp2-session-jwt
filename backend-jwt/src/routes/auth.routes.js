@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { validarJWT } from '../middlewares/validar-jwt.js';
 import { authCtrl } from '../controllers/auth.controller.js';
+import { validarJWT } from '../middlewares/validar-jwt.js';
 
 const authRouter = Router();
 

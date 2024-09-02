@@ -3,7 +3,20 @@ import { generarJWT } from '../helpers/generar-jwt.js';
 
 export const authCtrl = {};
 
-// Endpoint de inicio de sesión (login)
+authCtrl.register = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const connection = await connectDB();
+        await connection.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, password]);
+
+        return res.json({ message: 'Usuario registrado exitosamente' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Error Inesperado' });
+    }
+};
+
 authCtrl.login = async (req, res) => {
     const { username, password } = req.body;
 
@@ -38,13 +51,13 @@ authCtrl.login = async (req, res) => {
 };
 
 // Endpoint para validar la sesión
-app.get('/session', validarJwt, (req, res) => {
+authCtrl.session = async (req, res) => {
     console.log(req.user);
     return res.json({ message: 'Acceso permitido a área protegida', user: req.user });
-});
+};
 
 // Endpoint de cierre de sesión (logout)
-app.post('/logout', (req, res) => {
+authCtrl.logout = async (req, res) => {
     try {
         req.session.destroy(err => {
             if (err) {
@@ -58,4 +71,4 @@ app.post('/logout', (req, res) => {
         console.error(error);
         return res.status(500).json({ message: 'Error Inesperado' });
     }
-});
+};

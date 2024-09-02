@@ -1,8 +1,6 @@
-// server.js
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import session from 'express-session';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes.js';
 
@@ -17,7 +15,7 @@ app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
-app.use(session(sessionMiddleware));
+app.use(sessionMiddleware);
 
 app.use('/api', authRouter);
 
