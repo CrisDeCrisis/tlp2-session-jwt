@@ -1,7 +1,8 @@
 import session from 'express-session';
+import { SECRET_KEY } from '../configs/env.config.js';
 
 export const sessionMiddleware = session({
-    secret: 'mi_secreto',
+    secret: SECRET_KEY,
     resave: false,
     saveUninitialized: true,
     cookie: {

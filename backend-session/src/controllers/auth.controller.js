@@ -1,4 +1,4 @@
-import { userModel } from '../models/user.model.js';
+import { connectDB } from '../database/database.js';
 
 export const authCtrl = {};
 
@@ -6,13 +6,13 @@ authCtrl.register = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await userModel.create({ username, password });
+        const connection = await connectDB();
+        const [result] = await connection.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, password]);
+        const user = { id: result.insertId, username };
+
         return res.json({
             message: 'Usuario registrado exitosamente',
-            user: {
-                id: user._id,
-                username: user.username
-            }
+            user
         });
     } catch (err) {
         return res.status(500).json({
@@ -26,17 +26,19 @@ authCtrl.login = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        const user = await userModel.find({ username, password });
+        const connection = await connectDB();
+        const [rows] = await connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
 
-        if (user) {
-            // Guardar información del usuario en la sesión
-            req.session.userId = user[0]._id;
-            req.session.username = user[0].username;
+        if (rows.length > 0) {
+            const user = rows[0];
+            req.session.userId = user.id;
+            req.session.username = user.username;
+
             return res.json({
                 message: 'Inicio de sesión exitoso',
                 user: {
-                    id: user[0]._id,
-                    username: user[0].username
+                    id: user.id,
+                    username: user.username
                 }
             });
         } else {
