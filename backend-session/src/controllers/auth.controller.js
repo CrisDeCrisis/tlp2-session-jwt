@@ -30,13 +30,13 @@ authCtrl.login = async (req, res) => {
 
         if (user) {
             // Guardar información del usuario en la sesión
-            req.session.userId = user._id;
-            req.session.username = user.username;
+            req.session.userId = user[0]._id;
+            req.session.username = user[0].username;
             return res.json({
                 message: 'Inicio de sesión exitoso',
                 user: {
-                    id: user._id,
-                    username: user.username
+                    id: user[0]._id,
+                    username: user[0].username
                 }
             });
         } else {
