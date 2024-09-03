@@ -7,7 +7,6 @@ import authRouter from './routes/auth.routes.js';
 import { PORT } from './configs/env.config.js';
 import { connectDB } from './database/database.js';
 import { corsOptions } from './configs/cors.config.js';
-import { sessionMiddleware } from './middlewares/session.middleware.js';
 
 const app = express();
 
@@ -15,7 +14,6 @@ app.use(cors(corsOptions));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
-app.use(sessionMiddleware);
 
 app.use('/api', authRouter);
 

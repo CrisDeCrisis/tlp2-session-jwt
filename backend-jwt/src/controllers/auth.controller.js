@@ -33,9 +33,6 @@ authCtrl.login = async (req, res) => {
         // Generar token JWT
         const token = await generarJWT(user.id);
 
-        // Almacenar el token en la sesión del servidor
-        req.session.token = token;
-
         // Almacenar el token en una cookie segura
         res.cookie('authToken', token, {
             httpOnly: true, // La cookie no es accesible desde JavaScript
@@ -59,14 +56,8 @@ authCtrl.session = async (req, res) => {
 // Endpoint de cierre de sesión (logout)
 authCtrl.logout = async (req, res) => {
     try {
-        req.session.destroy(err => {
-            if (err) {
-                return res.status(500).json({ message: 'Error al cerrar sesión' });
-            }
-
-            res.clearCookie('authToken');
-            return res.json({ message: 'Cierre de sesión exitoso' });
-        });
+        res.clearCookie('authToken');
+        return res.json({ message: 'Cierre de sesión exitoso' });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Error Inesperado' });
