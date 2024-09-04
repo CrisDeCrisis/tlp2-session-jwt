@@ -1,21 +1,25 @@
 # Autenticación y Autorización con Sesiones y JWT
 
-Instalaciones:
+## Se crearon ramas independientes para cada proyecto
 
+**_Seleccionar la rama que desea probar_**
 
 Back-end con JWT:
+
 ```bash
 cd backend-jwt
 npm install
 ```
 
 Back-end con Sesiones:
+
 ```bash
 cd backend-session
 npm install
 ```
 
 Front-end:
+
 ```bash
 cd frontend
 npm install
