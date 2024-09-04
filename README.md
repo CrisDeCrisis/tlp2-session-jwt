@@ -9,11 +9,6 @@ cd backend-jwt
 npm install
 ```
 
-Back-end con Sesiones:
-```bash
-cd backend-session
-npm install
-```
 
 Front-end:
 ```bash
