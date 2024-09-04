@@ -7,6 +7,12 @@ authCtrl.register = async (req, res) => {
 
     try {
         const connection = await connectDB();
+        const [rows] = await connection.query('SELECT * FROM users WHERE username = ? AND password = ?', [username, password]);
+
+        if (rows.length > 0) {
+            return res.status(409).json({ message: 'El usuario ya existe' });
+        }
+
         const [result] = await connection.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, password]);
         const user = { id: result.insertId, username };
 
