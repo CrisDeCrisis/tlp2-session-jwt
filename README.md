@@ -3,12 +3,6 @@
 Instalaciones:
 
 
-Back-end con JWT:
-```bash
-cd backend-jwt
-npm install
-```
-
 Back-end con Sesiones:
 ```bash
 cd backend-session
